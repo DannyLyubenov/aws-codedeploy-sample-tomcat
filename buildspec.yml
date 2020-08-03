@@ -3,7 +3,6 @@ phases:
   build:
     commands:
       - mvn package
-      - sleep 10
       - chmod a+x src/Buildscripts/trigger_codebuild.sh
       - src/Buildscripts/trigger_codebuild.sh
 artifacts:
