@@ -62,7 +62,7 @@ start_codebuild(){
 }
 
 main(){
-  local codebuild_name="Temp_Danny_CodeBuild"
+  local codebuild_name="Temp_Danny_TestBuild"
 
   stop_running_builds "${codebuild_name}"
   start_codebuild "${codebuild_name}"
