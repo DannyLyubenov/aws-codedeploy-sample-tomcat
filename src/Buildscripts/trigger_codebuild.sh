@@ -61,10 +61,26 @@ start_codebuild(){
   echo "Starting Codebuild Project: ${codebuild_name}"
 }
 
+set_ssm_param(){
+  local ssm_param="$1"
+  local git_commit="$2"
+
+  aws ssm put-parameter --name "${ssm_param}" --value "${git_commit}" --type String --overwrite
+}
+
 main(){
-  local codebuild_name="Temp_Danny_TestBuild"
+  local codebuild_name=""
+  local ssm_param=""
+  local git_commit=""
+
+  codebuild_name=$(printenv POST_CHECKS)
+  ssm_param=$(printenv TEST_COMMIT)
 
   stop_running_builds "${codebuild_name}"
+
+  git_commit="commit${RANDOM:0:5}"
+  set_ssm_param "${ssm_param}" "${git_commit}"
+
   start_codebuild "${codebuild_name}"
 }
 
