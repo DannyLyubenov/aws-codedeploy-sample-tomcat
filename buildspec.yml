@@ -10,6 +10,8 @@ phases:
     commands:
       - mvn package
       - chmod a+x src/Buildscripts/trigger_codebuild.sh
+      - chmod a+x src/Buildscripts/generate_commit.sh
+      - src/Buildscripts/generate_commit.sh
       - src/Buildscripts/trigger_codebuild.sh
 artifacts:
   files:
