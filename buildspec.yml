@@ -9,10 +9,10 @@ phases:
   build:
     commands:
       - mvn package
-      - chmod a+x src/Buildscripts/trigger_codebuild.sh
+      - chmod a+x src/Buildscripts/trigger_pipeline.sh
       - chmod a+x src/Buildscripts/generate_commit.sh
       - src/Buildscripts/generate_commit.sh
-      - src/Buildscripts/trigger_codebuild.sh
+      - src/Buildscripts/trigger_pipeline.sh
 artifacts:
   files:
     - '**/*'
