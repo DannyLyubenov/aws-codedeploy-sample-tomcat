@@ -79,12 +79,29 @@ start_pipeline(){
   aws codepipeline start-pipeline-execution --name "${pipeline_name}"
 }
 
+get_pipeline_state(){
+  local pipeline_name="$1"
+  local pipeline_state=""
+  
+  pipeline_state=$(aws codepipeline get-pipeline-state \
+    --name "${pipeline_name}" \
+    --query "stageStates[1].latestExecution.status" \
+    --o text)
+
+  echo "${pipeline_state}"
+}
+
 stop_pipeline(){
   local pipeline_name="$1"
   local pipeline_id=""
+  local pipeline_state=""
 
-  pipeline_id=$(get_execution_id "${pipeline_name}")
-  aws codepipeline stop-pipeline-execution --pipeline-name "${pipeline_name}" --pipeline-execution-id "${pipeline_id}"
+  pipeline_state=$(get_pipeline_state "${pipeline_name}")
+
+  if [ "${pipeline_state}" = "InProgress" ]; then
+    pipeline_id=$(get_execution_id "${pipeline_name}")
+    aws codepipeline stop-pipeline-execution --pipeline-name "${pipeline_name}" --pipeline-execution-id "${pipeline_id}"
+  fi
 }
 
 get_codebuild_project(){
