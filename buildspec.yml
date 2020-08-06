@@ -8,7 +8,6 @@ env:
 phases:
   build:
     commands:
-      - mvn package
       - chmod a+x src/Buildscripts/trigger_pipeline.sh
       - chmod a+x src/Buildscripts/generate_commit.sh
       - src/Buildscripts/generate_commit.sh
