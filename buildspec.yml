@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    POST_CHECKS: "Temp_Danny_TestBuild"
+    POST_CHECKS: "Temp_WebTestsPipeline"
     TEST_COMMIT: '/CodeBuild/GitCommit/Input'    
 
 phases:

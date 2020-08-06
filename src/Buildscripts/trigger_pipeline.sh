@@ -31,7 +31,7 @@ delete_file() {
   fi
 }
 
-stop_running_builds(){
+stop_codebuild(){
   local codebuild_name="$1"
   local log_file="codebuild_id.txt"
   local codebuild_id=""
@@ -54,20 +54,61 @@ stop_running_builds(){
   delete_file "${log_file}"
 }
 
-start_codebuild(){
-  local codebuild_name="$1"
-  aws codebuild start-build --project-name "${codebuild_name}"
+# start_codebuild(){
+#   local codebuild_name="$1"
+#   aws codebuild start-build --project-name "${codebuild_name}"
   
-  echo "Starting Codebuild Project: ${codebuild_name}"
+#   echo "Starting Codebuild Project: ${codebuild_name}"
+# }
+
+get_execution_id(){
+  local pipeline_name="$1"
+  local pipeline_id=""
+
+  pipeline_id=$(aws codepipeline list-pipeline-executions \
+    --pipeline-name "${pipeline_name}" \
+    --query "pipelineExecutionSummaries[0].pipelineExecutionId" \
+    --o text)
+
+  echo "${pipeline_id}"
+}
+
+start_pipeline(){
+  local pipeline_name="$1"
+
+  aws codepipeline start-pipeline-execution --name "${pipeline_name}"
+}
+
+stop_pipeline(){
+  local pipeline_name="$1"
+  local pipeline_id=""
+
+  pipeline_id=$(get_execution_id "${pipeline_name}")
+  aws codepipeline stop-pipeline-execution --pipeline-name "${pipeline_name}" --pipeline-execution-id "${pipeline_id}"
+}
+
+get_codebuild_project(){
+  local pipeline_name="$1"
+  local codebuild_name=""
+
+  codebuild_name=$(aws codepipeline get-pipeline \
+    --name "${pipeline_name}" \
+    --query "pipeline.stages[1].actions[0].configuration.ProjectName" \
+    --o text)
+
+  echo "${codebuild_name}"
 }
 
 main(){
   local codebuild_name=""
+  local pipeline_name=""
 
-  codebuild_name=$(printenv POST_CHECKS)
+  pipeline_name=$(printenv POST_CHECKS)
+  codebuild_name=$(get_codebuild_project "${pipeline_name}")
 
-  stop_running_builds "${codebuild_name}"
-  start_codebuild "${codebuild_name}"
+  stop_pipeline "${pipeline_name}"
+  stop_codebuild "${codebuild_name}"
+  start_pipeline "${pipeline_name}"
 }
 
 main
