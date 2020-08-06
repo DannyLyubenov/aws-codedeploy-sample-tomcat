@@ -54,13 +54,6 @@ stop_codebuild(){
   delete_file "${log_file}"
 }
 
-# start_codebuild(){
-#   local codebuild_name="$1"
-#   aws codebuild start-build --project-name "${codebuild_name}"
-  
-#   echo "Starting Codebuild Project: ${codebuild_name}"
-# }
-
 get_execution_id(){
   local pipeline_name="$1"
   local pipeline_id=""
